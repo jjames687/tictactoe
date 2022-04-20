@@ -42,37 +42,46 @@ def turn_token(count):
         return "X"
 
 
-def ai_move(count, board):
+def ai_move(count, board, moves, log):
+    player = turn_token(count)
     #this function for the AI's move
-    move = randrange(1, 9, 1)
-    if board[move] == " ":
-        return move
+    if player == "O":
+        move = randrange(1, 10, 1)
+        rank = .5
+        for history in moves.keys():
+            histring = history
+            if histring[0:len(log)] == log:
+                if float(moves[history]) > rank:
+                    if len(histring) > len(log):
+                        move = int(histring[len(log)])
+                        rank = float(moves[history])
+                        print(histring)
+                        print(move)
+                        print(rank)
+        if board[move] == " ":
+            return move
+        else:
+            return ai_move(count, board, moves, log)
+
     else:
-        return ai_move(count, board)
+        move = randrange(1, 10, 1)
+        if board[move] == " ":
+            return move
+        else:
+            return ai_move(count, board, moves, log)
 
 
-def ask_move(count, board):
+def ask_move(count, board, moves, log):
     #this function asks for player move or calls function for ai move
     player = turn_token(count)
-    print_board(board)
-    print("It is your move " + player + ":")
     if player == "X":
-        move = int(input("What is your move: "))
-        valid_moves = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        if move in valid_moves:
-            if board[move] == " ":
-                print("You selected " + str(move))
-                board[move] = player
-                return move
-            else:
-                print("Try Again")
-                return ask_move(count, board)
-        else:
-            print("Try Again")
-            return ask_move(count, board)
+        move = ai_move(count, board, moves, log)
+        print("X choose " + str(move))
+        board[move] = player
+        return move
     else:
-        move = ai_move(count, board)
-        print("I choose " + str(move))
+        move = ai_move(count, board, moves, log)
+        print("O choose " + str(move))
         board[move] = player
         return move
 
@@ -120,31 +129,35 @@ def game():
     moves = read_move_tables()
     log = ""
     play = True
-    while play:
+    while play == True:
         player = turn_token(count)
-        move = ask_move(count, game_board)
+        move = ask_move(count, game_board, moves, log)
         log = log + str(move)
         if check_win(game_board):
+            print_board(game_board)
             print(player + " WON!!!!!")
-            if log in moves.keys():
+            if log in moves:
                 if player == "O":
-                    moves[log] = moves[log] * 1.1
+                    moves[log] = float(moves[log]) * 1.1
                 if player == "X":
-                    moves[log] = moves[log] * 0.9
+                    moves[log] = float(moves[log]) * 0.9
             else:
-                moves[log] = 1
-            print(moves)
+                if player == "O":
+                    moves[log] = 1
+                if player == "X":
+                    moves[log] = 0
             write_move_tables(moves)
             play = False
         elif check_cats(game_board):
+            print_board(game_board)
             print("Everybody Loses")
-            if log in moves.keys():
+            if log in moves:
                 if player == "O":
-                    moves[log] = moves[log] * 1.0
+                    moves[log] = float(moves[log]) * 1.0
                 if player == "X":
-                    moves[log] = moves[log] * 0.9
+                    moves[log] = float(moves[log]) * 0.9
             else:
-                moves[log] = 1
+                moves[log] = .5
             write_move_tables(moves)
             play = False
         count += 1
