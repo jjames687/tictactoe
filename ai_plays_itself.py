@@ -62,7 +62,6 @@ def ai_move(count, board, moves, log):
             return move
         else:
             return ai_move(count, board, moves, log)
-
     else:
         move = randrange(1, 10, 1)
         if board[move] == " ":
@@ -161,12 +160,10 @@ def game():
             write_move_tables(moves)
             play = False
         count += 1
-    again = input("Do you want to play again? y or n")
-    if again == "y":
-        game()
-    else:
-        exit()
 
 
 if __name__ == '__main__':
-    game()
+    again = 100
+    while again > 0:
+        game()
+        again = again - 1
