@@ -127,36 +127,40 @@ def game():
     count = 0
     moves = read_move_tables()
     log = ""
+    logs = list()
     play = True
     while play == True:
         player = turn_token(count)
         move = ask_move(count, game_board, moves, log)
         log = log + str(move)
+        logs.append(log)
         if check_win(game_board):
             print_board(game_board)
             print(player + " WON!!!!!")
-            if log in moves:
-                if player == "O":
-                    moves[log] = float(moves[log]) * 1.1
-                if player == "X":
-                    moves[log] = float(moves[log]) * 0.9
-            else:
-                if player == "O":
-                    moves[log] = 1
-                if player == "X":
-                    moves[log] = 0
+            for in_log in logs:
+                if in_log in moves:
+                    if player == "O":
+                        moves[in_log] = float(moves[in_log]) * 1.1
+                    if player == "X":
+                        moves[in_log] = float(moves[in_log]) * 0.9
+                else:
+                    if player == "O":
+                        moves[in_log] = 1
+                    if player == "X":
+                        moves[in_log] = 0.5
             write_move_tables(moves)
             play = False
         elif check_cats(game_board):
             print_board(game_board)
             print("Everybody Loses")
-            if log in moves:
-                if player == "O":
-                    moves[log] = float(moves[log]) * 1.0
-                if player == "X":
-                    moves[log] = float(moves[log]) * 0.9
-            else:
-                moves[log] = .5
+            for in_log in logs:
+                if in_log in moves:
+                    if player == "O":
+                        moves[in_log] = float(moves[in_log]) * 1.1
+                    if player == "X":
+                        moves[in_log] = float(moves[in_log]) * 0.9
+                else:
+                    moves[in_log] = 0.5
             write_move_tables(moves)
             play = False
         count += 1
