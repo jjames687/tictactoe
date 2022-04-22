@@ -52,7 +52,7 @@ def ai_move(count, board, moves, log):
             histring = history
             if histring[0:len(log)] == log:
                 if float(moves[history]) > rank:
-                    if len(histring) > len(log):
+                    if len(histring) == (len(log) + 1):
                         move = int(histring[len(log)])
                         rank = float(moves[history])
                         print(histring)
@@ -144,21 +144,22 @@ def game():
         player = turn_token(count)
         move = ask_move(count, game_board, moves, log)
         log = log + str(move)
-        logs.append(log)
+        if len(log) > 1:
+            logs.append(log)
         if check_win(game_board):
             print_board(game_board)
             print(player + " WON!!!!!")
             for in_log in logs:
                 if in_log in moves:
                     if player == "O":
-                        moves[in_log] = float(moves[in_log]) * 1.1
+                        moves[in_log] = float(moves[in_log]) * 1.5
                     if player == "X":
-                        moves[in_log] = float(moves[in_log]) * 0.9
+                        moves[in_log] = float(moves[in_log]) * 0.5
                 else:
                     if player == "O":
                         moves[in_log] = 1
                     if player == "X":
-                        moves[in_log] = 0.5
+                        moves[in_log] = 0.1
             write_move_tables(moves)
             play = False
         elif check_cats(game_board):
@@ -169,7 +170,7 @@ def game():
                     if player == "O":
                         moves[in_log] = float(moves[in_log]) * 1.1
                     if player == "X":
-                        moves[in_log] = float(moves[in_log]) * 0.9
+                        moves[in_log] = float(moves[in_log]) * 0.75
                 else:
                     moves[in_log] = 0.5
             write_move_tables(moves)
